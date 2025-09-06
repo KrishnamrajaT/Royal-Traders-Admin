@@ -1,0 +1,287 @@
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Rating,
+  useMediaQuery,
+  useTheme,
+  styled,
+  Skeleton,
+  Button,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LogoutIcon from "@mui/icons-material/Logout";
+import axios from "axios";
+import dayjs from "dayjs";
+import CustomPagination from "../components/CustomePagination";
+import { useNavigate } from "react-router-dom";
+
+// Styled components using the styled API
+const ReviewCard = styled(Card)(({ theme }) => ({
+  height: "100%",
+}));
+
+const ReviewPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [reviews, setReviews] = useState([]);
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [reviewsPage, setReviewsPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const reviewsPerPage = isMobile ? 3 : 9;
+  const sortedData = [...(reviews || [])].sort((a, b) => a.rating - b.rating);
+
+  const currentReviews = sortedData?.slice(
+    (reviewsPage - 1) * reviewsPerPage,
+    reviewsPage * reviewsPerPage
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    navigate("/");
+  };
+
+  let REVIEW_URL = "https://royal-traders-5euy.vercel.app/rating";
+  const fetchReviews = () => {
+    axios
+      .get(REVIEW_URL)
+      .then((res) => {
+        console.log(res.data);
+        setReviews(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  };
+  useEffect(() => {
+    fetchReviews();
+  }, [isRefresh]);
+
+  //   if (isLoading) {
+  //     return (
+  //       <Box
+  //         display={"flex"}
+  //         justifyContent={"center"}
+  //         alignItems={"center"}
+  //         width={"100%"}
+  //         height={"300px"}
+  //       >
+  //         <Typography variant="h6" textAlign="center" sx={{ width: "100%" }}>
+  //           Loading reviews...{" "}
+  //         </Typography>
+  //       </Box>
+  //     );
+  //   }
+
+  return (
+    <Box>
+      {/* Header */}
+      <Box
+        sx={{
+          //   background: `linear-gradient(45deg, #2563eb 0%, #1e40af 100%)`,
+          //   color: theme.palette.common.white,
+          padding: "34px 8px 34px 8px",
+          textAlign: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {isLoading ? (
+            <Skeleton variant="rectangular" width={100} height={35} />
+          ) : (
+            <Button
+              variant="contained"
+              endIcon={<LogoutIcon />}
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          )}
+        </Box>
+        {!isLoading && (
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "30px",
+                sm: "2.4rem",
+                md: "3rem",
+              },
+              paddingTop: "33px",
+              fontWeight: 700,
+              lineHeight: 1.2,
+            }}
+            component="h1"
+            gutterBottom
+          >
+            Manage Client Reviews
+          </Typography>
+        )}
+      </Box>
+
+      <Box maxWidth="lg" mx="auto">
+        {/* Reviews Section */}
+        <Box mb={3}>
+          <Box>
+            <Box sx={{ width: "100%" }}>
+              <Grid
+                container
+                spacing={3}
+                sx={{
+                  // Explicitly define grid layout for 3 rows
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "repeat(1, 1fr)", // 1 column on mobile
+                    sm: "repeat(2, 1fr)", // 2 columns on tablet
+                    md: "repeat(3, 1fr)", // 3 columns on desktop
+                  },
+                  gridAutoRows: "1fr", // Equal row height
+                  gap: 3, // Consistent spacing
+                }}
+              >
+                {currentReviews?.map((review) => (
+                  <Grid
+                    item
+                    key={review.id}
+                    sx={{
+                      display: "flex",
+                      minHeight: "300px", // Fixed minimum height per card
+                    }}
+                  >
+                    <ReviewCard
+                      sx={{
+                        width: "100%",
+                        height: "100%", // Fill grid cell
+                        border: "1px solid #e0e",
+                      }}
+                    >
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        {/* Review content */}
+                        <Box display="flex" alignItems="center" mb={2}>
+                          {/* <Avatar
+                            src={review.avatar}
+                            sx={{ width: 56, height: 56, mr: 2 }}
+                          /> */}
+                          <Box
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                          >
+                            <Box>
+                              {isLoading ? (
+                                <>
+                                  <Skeleton
+                                    variant="rectangular"
+                                    width={350}
+                                    height={30}
+                                    sx={{ mb: 1 }}
+                                  />
+                                  <Skeleton
+                                    variant="rectangular"
+                                    width={200}
+                                    height={30}
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <Typography fontWeight="bold">
+                                    {review.name}
+                                  </Typography>
+                                  <Typography>
+                                    {dayjs(review.createdAt).format(
+                                      "YYYY-MM-DD"
+                                    )}
+                                  </Typography>
+                                </>
+                              )}
+                            </Box>
+                          </Box>
+                        </Box>
+                        <Box
+                          display={"flex"}
+                          alignItems={"center"}
+                          justifyContent={"space-between"}
+                        >
+                          {isLoading ? (
+                            <Skeleton
+                              variant="rectangular"
+                              width={220}
+                              height={20}
+                            />
+                          ) : (
+                            <Rating
+                              value={review.rating}
+                              precision={0.5}
+                              readOnly
+                            />
+                          )}
+                          {isLoading ? (
+                            <Skeleton
+                              variant="rectangular"
+                              width={100}
+                              height={30}
+                            />
+                          ) : (
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              endIcon={<DeleteIcon />}
+                            >
+                              Delete
+                            </Button>
+                          )}
+                        </Box>
+                        <Typography
+                          variant="body1"
+                          fontStyle="italic"
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            paddingTop: "10px",
+                          }}
+                        >
+                          {isLoading ? (
+                            <>
+                              {Array.from({ length: 4 }).map((_, idx) => (
+                                <Skeleton
+                                  key={idx}
+                                  variant="rectangular"
+                                  width={500}
+                                  height={30}
+                                  sx={{ mb: 1 }}
+                                />
+                              ))}
+                            </>
+                          ) : (
+                            review.message
+                          )}
+                        </Typography>
+                      </CardContent>
+                    </ReviewCard>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+
+            {/* Add pagination controls for reviews */}
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              {!isLoading && (
+                <CustomPagination
+                  count={Math.ceil(reviews?.length / reviewsPerPage)}
+                  page={reviewsPage}
+                  onChange={(event, page) => setReviewsPage(page)}
+                />
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default ReviewPage;
