@@ -31,6 +31,7 @@ const ReviewPage = () => {
   const [isRefresh, setIsRefresh] = useState(false);
   const [reviewsPage, setReviewsPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGlobalLoading, setIsGlobalLoading] = useState(true);
   const navigate = useNavigate();
 
   const reviewsPerPage = isMobile ? 3 : 9;
@@ -40,7 +41,9 @@ const ReviewPage = () => {
     (reviewsPage - 1) * reviewsPerPage,
     reviewsPage * reviewsPerPage
   );
-
+  setTimeout(() => {
+    setIsGlobalLoading(false);
+  }, 2000);
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     navigate("/");
@@ -90,7 +93,7 @@ const ReviewPage = () => {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {isLoading ? (
+          {isLoading && isGlobalLoading ? (
             <Skeleton variant="rectangular" width={100} height={35} />
           ) : (
             <Button
@@ -170,7 +173,7 @@ const ReviewPage = () => {
                             justifyContent={"space-between"}
                           >
                             <Box>
-                              {isLoading ? (
+                              {isLoading && isGlobalLoading ? (
                                 <>
                                   <Skeleton
                                     variant="rectangular"
@@ -204,7 +207,7 @@ const ReviewPage = () => {
                           alignItems={"center"}
                           justifyContent={"space-between"}
                         >
-                          {isLoading ? (
+                          {isLoading && isGlobalLoading? (
                             <Skeleton
                               variant="rectangular"
                               width={220}
@@ -217,7 +220,7 @@ const ReviewPage = () => {
                               readOnly
                             />
                           )}
-                          {isLoading ? (
+                          {isLoading && isGlobalLoading ? (
                             <Skeleton
                               variant="rectangular"
                               width={100}
@@ -244,7 +247,7 @@ const ReviewPage = () => {
                             paddingTop: "10px",
                           }}
                         >
-                          {isLoading ? (
+                          {isLoading && isGlobalLoading ? (
                             <>
                               {Array.from({ length: 4 }).map((_, idx) => (
                                 <Skeleton
