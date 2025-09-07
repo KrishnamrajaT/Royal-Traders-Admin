@@ -54,6 +54,8 @@ const ReviewPage = () => {
 
   let REVIEW_URL = "https://royal-traders-5euy.vercel.app/rating";
   const fetchReviews = () => {
+    setIsLoading(true);
+
     axios
       .get(REVIEW_URL)
       .then((res) => {
@@ -62,7 +64,7 @@ const ReviewPage = () => {
         setIsLoading(false);
       })
       .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsLoading(true));
   };
   useEffect(() => {
     fetchReviews();
