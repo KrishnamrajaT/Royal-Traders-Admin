@@ -32,7 +32,6 @@ const ReviewPage = () => {
   const [isRefresh, setIsRefresh] = useState(false);
   const [reviewsPage, setReviewsPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [isGlobalLoading, setIsGlobalLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
@@ -44,9 +43,7 @@ const ReviewPage = () => {
     (reviewsPage - 1) * reviewsPerPage,
     reviewsPage * reviewsPerPage
   );
-  setTimeout(() => {
-    setIsGlobalLoading(false);
-  }, 2000);
+  
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     navigate("/");
@@ -61,10 +58,16 @@ const ReviewPage = () => {
       .then((res) => {
         console.log(res.data);
         setReviews(res.data);
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(true));
+      .catch((err) => {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+        console.log(err);
+      });
   };
   useEffect(() => {
     fetchReviews();
@@ -109,7 +112,7 @@ const ReviewPage = () => {
           </Alert>
         )}
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {isLoading && isGlobalLoading ? (
+          {isLoading ? (
             <Skeleton variant="rectangular" width={100} height={35} />
           ) : (
             <>
@@ -191,7 +194,7 @@ const ReviewPage = () => {
                             justifyContent={"space-between"}
                           >
                             <Box>
-                              {isLoading && isGlobalLoading ? (
+                              {isLoading   ? (
                                 <>
                                   <Skeleton
                                     variant="rectangular"
@@ -225,7 +228,7 @@ const ReviewPage = () => {
                           alignItems={"center"}
                           justifyContent={"space-between"}
                         >
-                          {isLoading && isGlobalLoading ? (
+                          {isLoading ? (
                             <Skeleton
                               variant="rectangular"
                               width={220}
@@ -238,7 +241,7 @@ const ReviewPage = () => {
                               readOnly
                             />
                           )}
-                          {isLoading && isGlobalLoading ? (
+                          {isLoading  ? (
                             <Skeleton
                               variant="rectangular"
                               width={100}
@@ -266,7 +269,7 @@ const ReviewPage = () => {
                             paddingTop: "10px",
                           }}
                         >
-                          {isLoading && isGlobalLoading ? (
+                          {isLoading ? (
                             <>
                               {Array.from({ length: 4 }).map((_, idx) => (
                                 <Skeleton

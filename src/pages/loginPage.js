@@ -46,7 +46,7 @@ export default function LoginPage() {
  
 
   // Static credentials
-  const STATIC_EMAIL = "admin@royaltraders.com";
+  const STATIC_EMAIL = "royaltradercherry@gmail.com";
   const STATIC_PASSWORD = "Admin@123";
 
   const handleSubmit = (e) => {
