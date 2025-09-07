@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import CustomPagination from "../components/CustomePagination";
 import { useNavigate } from "react-router-dom";
 
-// Styled components using the styled API
+
 const ReviewCard = styled(Card)(({ theme }) => ({
   height: "100%",
 }));
