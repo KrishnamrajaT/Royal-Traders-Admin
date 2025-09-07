@@ -11,6 +11,7 @@ import {
   styled,
   Skeleton,
   Button,
+  Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -32,6 +33,8 @@ const ReviewPage = () => {
   const [reviewsPage, setReviewsPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isGlobalLoading, setIsGlobalLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
   const reviewsPerPage = isMobile ? 3 : 9;
@@ -65,21 +68,22 @@ const ReviewPage = () => {
     fetchReviews();
   }, [isRefresh]);
 
-  //   if (isLoading) {
-  //     return (
-  //       <Box
-  //         display={"flex"}
-  //         justifyContent={"center"}
-  //         alignItems={"center"}
-  //         width={"100%"}
-  //         height={"300px"}
-  //       >
-  //         <Typography variant="h6" textAlign="center" sx={{ width: "100%" }}>
-  //           Loading reviews...{" "}
-  //         </Typography>
-  //       </Box>
-  //     );
-  //   }
+  const deleteReview = (id) => {
+    axios
+      .delete(`${REVIEW_URL}/${id}`)
+      .then((res) => {
+        setIsRefresh(!isRefresh);
+        setSuccess(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setServerError("Something went wrong! Try again later.");
+      });
+    setTimeout(() => {
+      setSuccess(false);
+      setServerError("");
+    }, 3000);
+  };
 
   return (
     <Box>
@@ -92,17 +96,29 @@ const ReviewPage = () => {
           textAlign: "center",
         }}
       >
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Delete successful!
+          </Alert>
+        )}
+        {serverError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {serverError}
+          </Alert>
+        )}
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           {isLoading && isGlobalLoading ? (
             <Skeleton variant="rectangular" width={100} height={35} />
           ) : (
-            <Button
-              variant="contained"
-              endIcon={<LogoutIcon />}
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                endIcon={<LogoutIcon />}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </>
           )}
         </Box>
         {!isLoading && (
@@ -207,7 +223,7 @@ const ReviewPage = () => {
                           alignItems={"center"}
                           justifyContent={"space-between"}
                         >
-                          {isLoading && isGlobalLoading? (
+                          {isLoading && isGlobalLoading ? (
                             <Skeleton
                               variant="rectangular"
                               width={220}
@@ -232,6 +248,7 @@ const ReviewPage = () => {
                               color="error"
                               size="small"
                               endIcon={<DeleteIcon />}
+                              onClick={() => deleteReview(review._id)}
                             >
                               Delete
                             </Button>
