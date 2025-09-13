@@ -1,8 +1,9 @@
 import "./App.css";
 import LoginPage from "./pages/loginPage";
-import  ReviewPage  from "./pages/DashBoard";
-import  ProtectedRoute  from "./pages/ProtectedRoute";
+import ReviewPage from "./pages/DashBoard";
+import ProtectedRoute from "./pages/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./pages/Layout";
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
             path="/dash-board"
             element={
               <ProtectedRoute>
-                <ReviewPage />
+                <Layout>
+                  <ReviewPage />
+                </Layout>
               </ProtectedRoute>
             }
           />

@@ -14,7 +14,6 @@ import {
   Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LogoutIcon from "@mui/icons-material/Logout";
 import axios from "axios";
 import dayjs from "dayjs";
 import CustomPagination from "../components/CustomePagination";
@@ -34,7 +33,6 @@ const ReviewPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
-  const navigate = useNavigate();
 
   const reviewsPerPage = isMobile ? 3 : 9;
   const sortedData = [...(reviews || [])].sort((a, b) => a.rating - b.rating);
@@ -44,10 +42,7 @@ const ReviewPage = () => {
     reviewsPage * reviewsPerPage
   );
   
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
-    navigate("/");
-  };
+  
 
   let REVIEW_URL = "https://royal-traders-5euy.vercel.app/rating";
   const fetchReviews = () => {
@@ -97,7 +92,7 @@ const ReviewPage = () => {
         sx={{
           //   background: `linear-gradient(45deg, #2563eb 0%, #1e40af 100%)`,
           //   color: theme.palette.common.white,
-          padding: "34px 8px 34px 8px",
+          padding: "0px 8px 34px 8px",
           textAlign: "center",
         }}
       >
@@ -111,21 +106,7 @@ const ReviewPage = () => {
             {serverError}
           </Alert>
         )}
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {isLoading ? (
-            <Skeleton variant="rectangular" width={100} height={35} />
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                endIcon={<LogoutIcon />}
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-            </>
-          )}
-        </Box>
+        
         {!isLoading && (
           <Typography
             sx={{
