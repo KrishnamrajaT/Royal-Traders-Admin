@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Tooltip } from "@mui/material";
 
 const pages = [
-  { label: "Videos", path: "/videos" },
+  { label: "Videos", path: "/video-review-upload" },
   { label: "Pricing", path: "/price-label-form" },
 ];
 

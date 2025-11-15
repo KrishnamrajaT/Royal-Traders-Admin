@@ -5,6 +5,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./pages/Layout";
 import OfferForm from "./pages/priceForm";
+import UploadVideoReview from "./pages/uploadVideoReview";
 
 function App() {
   return (
@@ -29,6 +30,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <OfferForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/video-review-upload"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <UploadVideoReview />
                 </Layout>
               </ProtectedRoute>
             }
