@@ -4,6 +4,7 @@ import ReviewPage from "./pages/DashBoard";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./pages/Layout";
+import OfferForm from "./pages/priceForm";
 
 function App() {
   return (
@@ -18,6 +19,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <ReviewPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/price-label-form"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <OfferForm />
                 </Layout>
               </ProtectedRoute>
             }
